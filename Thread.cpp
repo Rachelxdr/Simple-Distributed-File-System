@@ -7,6 +7,7 @@ void* send_sock_create(void* node){
     // while(my_node->node_mode == "active") {
         
     // }
+    pthread_exit(NULL);
 
 }
 
@@ -60,5 +61,6 @@ void* server_sock_create(void* node){
         
     }
     printf("%s", buf);
+    pthread_exit(NULL);
 
 }
