@@ -55,7 +55,7 @@ void* server_sock_create(void* node){
     int src_addr_len = sizeof(src_addr);
     bzero(buf, sizeof(buf));
     int num_bytes;
-    
+    cout <<"waiting for message..." <<endl;
     while((num_bytes = recvfrom(socket_fd, buf, MAXBUFLEN - 1 ,0, (struct sockaddr *)&src_addr,(socklen_t*)&src_addr_len)) > 0) {
         //design different data structure for membershiplist and files.
         

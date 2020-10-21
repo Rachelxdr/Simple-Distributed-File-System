@@ -70,8 +70,9 @@ void Node::send_message(string ip, string port, Message* msg_to_send) {
         perror("failed to bind send socket");
         return;
     }
-    cout << "sending message" << endl;
+
     string msg = msg_to_send->make_str_msg();
+    cout << "sending message" << endl;
     num_bytes = sendto(sock_fd, msg.c_str(), strlen(msg.c_str()), 0,p->ai_addr, p->ai_addrlen);
     
     cout <<"byte sent "<< num_bytes<<endl;

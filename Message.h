@@ -2,6 +2,7 @@
 #define MESSAGE_H
 
 #include <string>
+#include <iostream>
 
 #include "Message_type.h"
 

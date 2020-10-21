@@ -25,5 +25,6 @@ string Message::make_str_msg(){
         
     }
     str_msg += this->message;
+    cout <<"message to send: "<<str_msg<<endl;
     return str_msg;
 }
