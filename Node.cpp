@@ -48,7 +48,7 @@ void Node::send_message(string ip, string port, Message* msg_to_send) {
 
     hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
-
+    cout << "calling get addr info"<<endl;
     int get_addr_info_ret = getaddrinfo(ip.c_str(), port.c_str(), &hints, &servinfo);
     if (get_addr_info_ret != 0) {
         fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(get_addr_info_ret));
