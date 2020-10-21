@@ -38,7 +38,8 @@ void Node::send_message(string ip, string port, Message* msg_to_send) {
     if (msg_to_send->message_type == JOIN && this->is_master == true) {
         return;
     }
-
+    string log_msg = this->self_member_id + " sent to " + MASTER + ":" + PORT + "\n";
+    this->node_logger->log_message(log_msg);
     int sock_fd;
     struct addrinfo hints, *servinfo, *p;
     int num_bytes;
@@ -74,7 +75,7 @@ void Node::send_message(string ip, string port, Message* msg_to_send) {
         perror("error sending message");
     }
     cout<< "message sent: "<< msg <<endl;
-    string msg_to_log = "sent" + msg + "to" + MASTER + ":" + PORT; 
+    string msg_to_log = "sent " + msg + " to  " + MASTER + ":" + PORT +"\n"; 
     this->node_logger->log_message(msg_to_log);
     freeaddrinfo(servinfo);
     close(sock_fd);
@@ -119,8 +120,7 @@ void Node::activate(){
     // Ping master so that other members know
     Member master(MASTER, PORT);
     string mem_info = pack_membership_list();
-    string log_msg = this->self_member_id + "sent to" + MASTER + ":" + PORT + "\n";
-    this->node_logger->log_message(log_msg);
+  
     Message* msg_to_send = new Message(JOIN, mem_info);
     send_message(MASTER, PORT, msg_to_send);
 
