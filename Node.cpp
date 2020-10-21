@@ -51,10 +51,11 @@ void Node::send_message(string ip, string port, Message* msg_to_send) {
     cout << "calling get addr info"<<endl;
     int get_addr_info_ret = getaddrinfo(ip.c_str(), port.c_str(), &hints, &servinfo);
     if (get_addr_info_ret != 0) {
+        cout << "get addr info error"<<endl;
         fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(get_addr_info_ret));
         return;
     }
-
+    cout << "calling socket"<<endl;
     for (p = servinfo; p != NULL; p = p->ai_next) {
         sock_fd = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
         if (sock_fd == -1) {
@@ -63,14 +64,16 @@ void Node::send_message(string ip, string port, Message* msg_to_send) {
         } 
         break;
     }
-    
+    cout << "finished socket loop"<<endl;
     if (p == NULL) {
+        cout << "send socket not found"<<endl;
         perror("failed to bind send socket");
         return;
     }
+    cout << "sending message" << endl;
     string msg = msg_to_send->make_str_msg();
     num_bytes = send(sock_fd, msg.c_str(), strlen(msg.c_str()), 0);
-
+    cout <<"byte sent "<< num_bytes<<endl;
     if (num_bytes == -1){
         perror("error sending message");
     }
