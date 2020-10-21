@@ -18,6 +18,7 @@
 #include <pthread.h>
 #include <time.h>
 #include <tuple>
+#include <string.h>
 
 #include "File.h"
 #include "Logger.h"
