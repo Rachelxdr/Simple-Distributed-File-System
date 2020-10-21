@@ -1,6 +1,7 @@
 #ifndef NODE_H
 #define NODE_H
 
+#include <string.h>
 #include <map>
 #include <vector>
 #include <stdio.h>
@@ -18,7 +19,8 @@
 #include <pthread.h>
 #include <time.h>
 #include <tuple>
-#include <string.h>
+#include <ctime>
+
 
 #include "File.h"
 #include "Logger.h"
@@ -52,7 +54,9 @@ class Node {
 
         void activate();
         int join_system(Member introducer);
+        string time_util();
         Node();
+        
     private:
         string pack_membership_list();
         void send_message(string ip, string port, Message* message);
