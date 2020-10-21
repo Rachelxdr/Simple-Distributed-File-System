@@ -73,7 +73,9 @@ void Node::send_message(string ip, string port, Message* msg_to_send) {
     if (num_bytes == -1){
         perror("error sending message");
     }
-
+    cout<< "message sent: "<< msg <<endl;
+    string msg_to_log = "sent" + msg + "to" + MASTER + ":" + PORT; 
+    this->node_logger->log_message(msg_to_log);
     freeaddrinfo(servinfo);
     close(sock_fd);
     return;
