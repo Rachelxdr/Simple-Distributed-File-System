@@ -132,7 +132,7 @@ void Node::join_system(){
     // Ping master so that other members know
     Member master(MASTER, PORT);
     string mem_info = pack_membership_list();
-  
+    cout << "mem_info: "<<mem_info<<endl;
     Message* msg_to_send = new Message(JOIN, mem_info);
     send_message(MASTER, PORT, msg_to_send);
 }
