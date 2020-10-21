@@ -163,9 +163,10 @@ int main(int argc, char* argv[]) {
         if (cmd == "join"){
             my_node->activate();
             joined = true;
+            pthread_join(my_node->send_thread, NULL);
+            pthread_join(my_node->receive_thread, NULL);
         }
 
     }
-    pthread_join(my_node->send_thread, NULL);
-    pthread_join(my_node->receive_thread, NULL);
+    
 }
