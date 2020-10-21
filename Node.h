@@ -53,7 +53,7 @@ class Node {
         string node_mode;
 
         void activate();
-        int join_system(Member introducer);
+        void join_system();
         string time_util();
         Node();
         

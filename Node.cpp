@@ -109,7 +109,7 @@ struct hostent* Node::get_host(){
     return hp;
 }
 
-void Node::activate(){
+void Node::join_system(){
     Member own(inet_ntoa(*(struct in_addr*)this->host->h_addr_list[0]), PORT, this->local_time, this->hb_counter);
     this->self_member = own;
     this->node_mode = "active";
@@ -119,7 +119,9 @@ void Node::activate(){
     if (this->is_master){
         cout<<own.ip_address<<endl;
     }
-    // Log information of joining group
+    if (is_master) {
+        this->master_id = self_member_id;
+    }
     string message_to_log = this->time_util() + " JOIN: " + this->self_member_id + "\n";
     this->node_logger->log_message(message_to_log);
     // Ping master so that other members know
@@ -128,10 +130,15 @@ void Node::activate(){
   
     Message* msg_to_send = new Message(JOIN, mem_info);
     send_message(MASTER, PORT, msg_to_send);
+}
 
-    if (is_master) {
-        this->master_id = self_member_id;
-    }
+
+void Node::activate(){
+
+    int send_thread_ret = pthread_create(&this->send_thread, NULL, send_sock_create, (void*)this);
+    
+
+   
     int recv_thread_ret = pthread_create(&this->receive_thread, NULL, server_sock_create, (void*)this);
     
 }

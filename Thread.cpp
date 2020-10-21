@@ -3,10 +3,10 @@
 
 void* send_sock_create(void* node){
     Node* my_node = (Node*)node;
-    
-    while(my_node->node_mode == "active") {
+    my_node->join_system();
+    // while(my_node->node_mode == "active") {
         
-    }
+    // }
 
 }
 
