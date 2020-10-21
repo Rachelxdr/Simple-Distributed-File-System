@@ -120,7 +120,7 @@ void Node::join_system(){
     this->node_mode = "active";
     time(&this->start_time);
     this->self_member_id = own.ip_address + ":" + PORT + ":" + to_string(this->start_time);
-
+    this->mem_list[this->self_member_id] = make_tuple(this->hb_counter, this->local_time, 0);
     if (this->is_master){
         cout<<own.ip_address<<endl;
     }
