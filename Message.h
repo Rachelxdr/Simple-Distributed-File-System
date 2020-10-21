@@ -4,17 +4,16 @@
 #include <string>
 #include <iostream>
 
-#include "Message_type.h"
 
 using namespace std;
 class Message {
     public:
-        MessageType message_type;
+        string message_type;
         string message;
 
         Message();
-        Message(MessageType msg_type);
-        Message(MessageType msg_type, string msg);
+        Message(string msg_type);
+        Message(string msg_type, string msg);
 
         string make_str_msg(); 
 };

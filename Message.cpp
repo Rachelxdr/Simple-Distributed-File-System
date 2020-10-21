@@ -2,28 +2,23 @@
 
 
 Message::Message() {
-    message_type = UNDEFINED;
+    message_type = "";
     message = "";
 }
 
-Message::Message(MessageType msg_type) {
+Message::Message(string msg_type) {
     message_type = msg_type;
     message = "";
 }
 
-Message::Message(MessageType msg_type, string msg) {
-    message_type = message_type;
+Message::Message(string msg_type, string msg) {
+    message_type = msg_type;
     message = msg;
 }
 
 string Message::make_str_msg(){
-    string str_msg = "";
-    switch (this->message_type) {
-        case JOIN :
-            str_msg = "JOIN";
-            break;
-        
-    }
+    string str_msg = this->message_type;
+    
     str_msg += this->message;
     cout <<"message to send: "<<str_msg<<endl;
     return str_msg;

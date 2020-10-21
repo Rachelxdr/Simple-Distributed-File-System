@@ -35,7 +35,8 @@ string Node::pack_membership_list(){
 }
 
 void Node::send_message(string ip, string port, Message* msg_to_send) {
-    if (msg_to_send->message_type == JOIN && this->is_master == true) {
+    if (msg_to_send->message_type == "JOIN" && this->is_master == true) {
+        cout << "master"<<endl;
         return;
     }
     string log_msg = this->time_util() + " " + this->self_member_id + " sent to " + MASTER + ":" + PORT + "\n";
@@ -133,7 +134,8 @@ void Node::join_system(){
     Member master(MASTER, PORT);
     string mem_info = pack_membership_list();
     cout << "mem_info: "<<mem_info<<endl;
-    Message* msg_to_send = new Message(JOIN, mem_info);
+    Message* msg_to_send = new Message("JOIN", mem_info);
+    cout << "type: "<< msg_to_send->message_type <<endl;
     send_message(MASTER, PORT, msg_to_send);
 }
 
@@ -159,6 +161,7 @@ int main(int argc, char* argv[]) {
 
     if (argc != 1){
         my_node->is_master = true;
+        cout <<"master: "<< my_node->is_master <<endl;
     }
 
     string cmd;
