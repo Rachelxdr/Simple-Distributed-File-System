@@ -117,7 +117,7 @@ void Node::activate(){
     // Ping master so that other members know
     Member master(MASTER, PORT);
     string mem_info = pack_membership_list();
-    string log_msg = this->self_member_id + "sent to" + MASTER + ":" + PORT;
+    string log_msg = this->self_member_id + "sent to" + MASTER + ":" + PORT + "\n";
     this->node_logger->log_message(log_msg);
     Message* msg_to_send = new Message(JOIN, mem_info);
     send_message(MASTER, PORT, msg_to_send);
