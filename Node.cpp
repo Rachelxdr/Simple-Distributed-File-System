@@ -72,7 +72,8 @@ void Node::send_message(string ip, string port, Message* msg_to_send) {
     }
     cout << "sending message" << endl;
     string msg = msg_to_send->make_str_msg();
-    num_bytes = send(sock_fd, msg.c_str(), strlen(msg.c_str()), 0);
+    num_bytes = sendto(sock_fd, msg.c_str(), strlen(msg.c_str()), 0,p->ai_addr, p->ai_addrlen);
+    
     cout <<"byte sent "<< num_bytes<<endl;
     if (num_bytes == -1){
         perror("error sending message");
