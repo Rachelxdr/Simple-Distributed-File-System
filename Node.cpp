@@ -84,6 +84,7 @@ void Node::send_message(string ip, string port, Message* msg_to_send) {
     //process and send message
     string msg = msg_to_send->make_str_msg();
     cout << "sending message: "<< msg<< endl;
+    cout << "p->ai_addr " <<p->ai_addr<<endl;
     num_bytes = sendto(sock_fd, msg.c_str(), strlen(msg.c_str()), 0,p->ai_addr, p->ai_addrlen);
     
     cout <<"byte sent "<< num_bytes<<endl;
@@ -93,7 +94,7 @@ void Node::send_message(string ip, string port, Message* msg_to_send) {
     // cout<< "message sent: "<< msg <<endl;
 
     // Log sending information
-    string msg_to_log = this->time_util() + " " + "sent " + msg + " to  " + MASTER + ":" + PORT +"\n"; 
+    string msg_to_log = this->time_util() + " " + "sent " + msg + " to  " + ip + ":" + port +"\n"; 
     this->node_logger->log_message(msg_to_log);
 
 
