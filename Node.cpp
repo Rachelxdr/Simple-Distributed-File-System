@@ -175,12 +175,13 @@ void Node::failure_detection(){
         int mem_time = get<1>(mem.second);
         int mem_flag = get<2>(mem.second);
         // myself, skip
-        cout<<"checking mem: "<< mem_id<<endl;
+
         if (mem_id.compare(this->self_member_id) == 0) {
             continue;
         }
 
         if (mem_flag == ACTIVE) {
+            cout<<"checking mem: "<< mem_id<<endl;
             if (this->local_time - mem_time > T_timeout) {
                 cout<<"local: "<<this->local_time<<endl;
                 cout<<"mem: "<<mem_time <<endl;
