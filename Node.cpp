@@ -10,6 +10,7 @@ Node::Node() {
     node_logger = new Logger();
     node_mode = "inactive";
     bytes_received = 0;
+    round = 0;
      // need to get local ip address
     
 }

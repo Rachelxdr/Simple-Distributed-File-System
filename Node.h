@@ -57,6 +57,7 @@ class Node {
         struct hostent* host;
         string node_mode;
         int bytes_received;
+        int round;
         queue<string> qMessages;
 
         void activate();
