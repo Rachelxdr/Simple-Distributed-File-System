@@ -84,7 +84,8 @@ void Node::send_message(string ip, string port, Message* msg_to_send) {
     //process and send message
     string msg = msg_to_send->make_str_msg();
     cout << "sending message: "<< msg<< endl;
-    cout << "p->ai_addr " <<p->ai_addr<<endl;
+    struct sockaddr_in* result_addr = (struct sockaddr_in*) p->ai_addr;
+    printf("addr: %s", inet_ntoa(result_addr->sin_addr));
     num_bytes = sendto(sock_fd, msg.c_str(), strlen(msg.c_str()), 0,p->ai_addr, p->ai_addrlen);
     
     cout <<"byte sent "<< num_bytes<<endl;
