@@ -16,6 +16,11 @@ void* send_sock_create(void* node){
 
 
 void* server_sock_create(void* node){
+    receive_msg(node);
+    pthread_exit(NULL);
+    
+}
+void receive_msg(void* node){
     Node* my_node = (Node*) node;
     int socket_fd;
     struct addrinfo hints, *result;
@@ -56,7 +61,7 @@ void* server_sock_create(void* node){
     freeaddrinfo(result);
     char buf[MAXBUFLEN];
     struct sockaddr_storage src_addr;
-    int src_addr_len = sizeof(src_addr);
+    socklen_t src_addr_len = sizeof(src_addr);
     bzero(buf, sizeof(buf));
     int num_bytes;
     cout <<"thread created" <<endl;
@@ -73,6 +78,5 @@ void* server_sock_create(void* node){
     }
     close(socket_fd);
     // printf("%s", buf);
-    pthread_exit(NULL);
 
 }

@@ -41,6 +41,7 @@ using namespace std;
 
 void* send_sock_create(void* node);
 void* server_sock_create(void* node);
+void receive_msg(void* node);
 class Node {
     public:
         string self_member_id;
