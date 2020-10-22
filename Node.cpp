@@ -247,18 +247,20 @@ void Node::join_system(){
 }
 
 
-void Node::activate(){
-    // create send thread
-    int send_thread_ret = pthread_create(&this->send_thread, NULL, send_sock_create, (void*)this);
+// void Node::activate(){
+//     // create send thread
+//     int send_thread_ret = pthread_create(&send_thread, NULL, send_sock_create, (void*)this);
     
 
    
-    // int recv_thread_ret = pthread_create(&this->receive_thread, NULL, server_sock_create, (void*)this);
+//     // int recv_thread_ret = pthread_create(&this->receive_thread, NULL, server_sock_create, (void*)this);
     
-}
+// }
 
 
 int main(int argc, char* argv[]) {
+    pthread_t send_thread;
+    pthread_t receive_thread;
     if (argc != 1 && argc != 2) {
         std::cout << "Invalid format" <<endl;
         exit(1);
@@ -298,7 +300,7 @@ int main(int argc, char* argv[]) {
     my_node->self_member = own;
 
     // create node receive thread
-    int recv_thread_ret = pthread_create(&my_node->receive_thread, NULL, server_sock_create, (void*)my_node);
+    int recv_thread_ret = pthread_create(&receive_thread, NULL, server_sock_create, (void*)my_node);
     
     //create node member id
     time(&my_node->start_time);
@@ -313,11 +315,11 @@ int main(int argc, char* argv[]) {
     while(1) {
         std::cin >> cmd;
         if (cmd == "join"){
-            my_node->activate();
-
+            int send_thread_ret = pthread_create(&send_thread, NULL, send_sock_create, (void*)my_node);
+    
         }
-        pthread_join(my_node->send_thread, NULL);
-        pthread_join(my_node->receive_thread, NULL);
+        pthread_join(send_thread, NULL);
+        // pthread_join(my_node->receive_thread, NULL);
 
     }
     pthread_exit(NULL);

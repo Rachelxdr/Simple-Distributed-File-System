@@ -54,8 +54,6 @@ class Node {
         Logger* node_logger;
         // vector<File> local_files;
         struct hostent* host;
-        pthread_t send_thread;
-        pthread_t receive_thread;
         string node_mode;
         int bytes_received;
         queue<string> qMessages;
