@@ -60,20 +60,26 @@ void receive_msg(void* node){
     
     freeaddrinfo(result);
     char buf[MAXBUFLEN];
-    struct sockaddr_storage src_addr;
+    struct sockaddr_storage* src_addr;
     socklen_t src_addr_len = sizeof(src_addr);
     bzero(buf, sizeof(buf));
     int num_bytes;
     cout <<"thread created" <<endl;
     cout<<"socket fd: "<<socket_fd<<endl;
     
-    while((num_bytes = recvfrom(socket_fd, buf, MAXBUFLEN - 1 ,0, (struct sockaddr *)&src_addr,(socklen_t*)&src_addr_len)) > 0) {
+    while((num_bytes = recvfrom(socket_fd, buf, MAXBUFLEN - 1 ,0, (struct sockaddr *)src_addr,(socklen_t*)&src_addr_len)) > 0) {
         //design different data structure for membershiplist and files.
 
         my_node->bytes_received += num_bytes;
         buf[num_bytes] = '\0';
         my_node->qMessages.push(buf);
-        printf("message received: %s\n", buf);
+        
+        struct sockaddr_in* src_addr_info = (struct sockaddr_in*)src_addr;
+
+        printf("message received: %s from %s\n", buf, inet_ntoa(src_addr_info->sin_addr));
+        string msg_to_log = my_node->time_util() + " Received " + to_string(num_bytes) + " bytes " + "from " + inet_ntoa(src_addr_info->sin_addr) + " : " + PORT;
+        my_node->node_logger->log_message(msg_to_log);
+
         bzero(buf, sizeof(buf));
     }
     close(socket_fd);
