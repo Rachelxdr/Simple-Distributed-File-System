@@ -15,7 +15,7 @@ void* send_sock_create(void* node){
 
         my_node->failure_detection();
         my_node->hb_counter++;
-        my_node->local_time++;
+        my_node->local_time == my_node->get_time();
         my_node->update_mem_list();
 
         vector<string> targets = my_node->get_gossip_targets();

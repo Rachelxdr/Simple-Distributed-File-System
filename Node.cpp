@@ -311,11 +311,19 @@ void Node::read_message(string msg){
 
 }
 
+int Node::get_time() {
+    time_t time_buf;
+    time(&time_buf);
+    return static_cast<int>(time_buf);
+}
+
 void Node::join_system(){
     
     this->node_mode = "active";
     
     //Log join info
+
+    this->local_time = get_time();
     string message_to_log = this->time_util() + " JOIN: " + this->self_member_id + "\n";
     this->node_logger->log_message(message_to_log);
 

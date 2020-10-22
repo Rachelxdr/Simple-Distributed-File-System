@@ -68,6 +68,7 @@ class Node {
         void update_mem_list();
         vector<string> get_gossip_targets();
         void send_pings(vector<string> targets);
+        int get_time();
 
         Node();
         
