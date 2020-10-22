@@ -44,7 +44,7 @@ void Node::send_message(string ip, string port, Message* msg_to_send) {
     // 
     // string log_msg = this->time_util() + " " + this->self_member_id + " sent to " + MASTER + ":" + PORT + "\n";
     // this->node_logger->log_message(log_msg);
-
+    cout<<"target ip: "<<ip<<"target port: "<<port<<endl;
     
     int sock_fd;
     struct addrinfo hints, *servinfo, *p;
