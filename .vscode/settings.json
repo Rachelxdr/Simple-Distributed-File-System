@@ -1,0 +1,13 @@
+{
+    "files.associations": {
+        "iosfwd": "cpp",
+        "string": "cpp",
+        "tuple": "cpp",
+        "vector": "cpp",
+        "map": "cpp",
+        "ostream": "cpp",
+        "iostream": "cpp",
+        "queue": "cpp",
+        "filesystem": "cpp"
+    }
+}
