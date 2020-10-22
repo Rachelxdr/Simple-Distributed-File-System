@@ -175,6 +175,7 @@ void Node::failure_detection(){
         int mem_time = get<1>(mem.second);
         int mem_flag = get<2>(mem.second);
         // myself, skip
+        cout<<"checking mem: "<< mem_id<<endl;
         if (mem_id.compare(this->self_member_id) == 0) {
             continue;
         }
