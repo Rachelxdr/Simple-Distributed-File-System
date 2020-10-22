@@ -180,6 +180,8 @@ void Node::failure_detection(){
 
         if (mem_flag == ACTIVE) {
             if (this->local_time - mem_time > T_timeout) {
+                cout<<"local: "<<this->local_time<<endl;
+                cout<<"mem: "<<mem_time <<endl;
                 get<1>(mem.second) = this->local_time;
                 get<2>(mem.second) = FAIL;
 
