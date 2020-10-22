@@ -168,6 +168,7 @@ vector<string> Node::splitString(string s, string delimiter) {
 
 void Node::failure_detection(){
     vector<string> to_remove;
+    cout<<"failure detection"<<endl;
     for (auto& mem : this->mem_list) {
         string mem_id = mem.first;
         int mem_hb = get<0>(mem.second);
