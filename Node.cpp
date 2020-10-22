@@ -27,12 +27,13 @@ string Node::pack_membership_list(){
 
 int Node::get_message() {
     queue<string> all_message(this->qMessages);
-    
-    for (int i = 0; i < all_message.size(); i++) {
+    int size = all_message.size();
+    for (int i = 0; i < size; i++) {
         cout<< "all meessages " << all_message.front()<<endl;
         read_message(all_message.front());
+        all_message.pop();
     }
-    
+    return 0;
 }
 
 void Node::send_message(string ip, string port, Message* msg_to_send) {
