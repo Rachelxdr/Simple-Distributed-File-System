@@ -6,7 +6,7 @@ void* send_sock_create(void* node){
     my_node->join_system();
     while(my_node->node_mode == "active") {
         cout<<"round: "<<my_node->round<<endl;
-        cout<<"local time: "<<my_node->local_time<<endl;
+        
         my_node->round++;
         my_node->get_message();
 
@@ -16,7 +16,9 @@ void* send_sock_create(void* node){
 
         my_node->failure_detection();
         my_node->hb_counter++;
-        my_node->local_time == my_node->get_time();
+        cout<<"local time before: "<<my_node->local_time<<endl;
+        my_node->update_time();
+        cout<<"local time after: "<<my_node->local_time<<endl;
         my_node->update_mem_list();
 
         vector<string> targets = my_node->get_gossip_targets();
@@ -43,7 +45,7 @@ void receive_msg(void* node){
     int socket_fd;
     struct addrinfo hints, *result;
     memset(&hints, 0, sizeof(struct addrinfo));
-    hints.ai_family = AF_INET;
+    hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
     // hints.ai_socktype = SOCK_DGRAM;
     hints.ai_flags = AI_PASSIVE;

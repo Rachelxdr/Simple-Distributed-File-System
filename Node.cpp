@@ -92,7 +92,7 @@ void Node::send_message(string ip, string port, Message* msg_to_send) {
     
     memset(&hints, 0, sizeof(hints));
 
-    hints.ai_family = AF_INET;
+    hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
     // hints.ai_socktype = SOCK_STREAM;
 
@@ -320,7 +320,14 @@ int Node::get_time() {
     time_t time_buf;
     time(&time_buf);
     cout <<"time function: "<<time_buf<<endl;
+    cout<< "int" <<static_cast<int>(time_buf)<<endl;
     return static_cast<int>(time_buf);
+}
+
+void Node::update_time() {
+    time_t time_buf;
+    time(&time_buf);
+    this->local_time = static_cast<int>(time_buf);
 }
 
 void Node::join_system(){
