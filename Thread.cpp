@@ -20,8 +20,9 @@ void* server_sock_create(void* node){
     int socket_fd;
     struct addrinfo hints, *result;
     memset(&hints, 0, sizeof(struct addrinfo));
-    hints.ai_family = AF_INET;
-    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_family = AF_UNSPEC;
+    // hints.ai_socktype = SOCK_STREAM;
+    hints.ai_socktype = SOCK_DGRAM;
     hints.ai_flags = AI_PASSIVE;
     
     int s = getaddrinfo(NULL, PORT, &hints, &result);
@@ -37,11 +38,13 @@ void* server_sock_create(void* node){
             continue;
         }
         // size_t b = bind(socket_fd, find_valid->ai_addr, find_valid->ai_addrlen);
-        bind(socket_fd, find_valid->ai_addr, find_valid->ai_addrlen);
-        // if (b < 0) {
-        //     perror("bindServer: bind");
-        //     continue;
-        // }
+        
+        if (int b = ::bind(socket_fd, find_valid->ai_addr, find_valid->ai_addrlen) < 0) {
+            close(socket_fd);
+            perror("bindServer: bind");
+            continue;
+        }
+        find_valid = find_valid->ai_next;
         break;
     }
     

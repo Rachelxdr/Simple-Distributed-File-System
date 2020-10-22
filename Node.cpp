@@ -50,8 +50,9 @@ void Node::send_message(string ip, string port, Message* msg_to_send) {
     
     memset(&hints, 0, sizeof(hints));
 
-    hints.ai_family = AF_INET;
-    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_DGRAM;
+    // hints.ai_socktype = SOCK_STREAM;
 
     // cout << "calling get addr info"<<endl;
     int get_addr_info_ret = getaddrinfo(ip.c_str(), port.c_str(), &hints, &servinfo);
@@ -314,5 +315,7 @@ int main(int argc, char* argv[]) {
         pthread_join(my_node->receive_thread, NULL);
 
     }
+    pthread_exit(NULL);
+    return 0;
     
 }
