@@ -27,6 +27,7 @@ string Node::pack_membership_list(){
 
 int Node::get_message() {
     queue<string> all_message(this->qMessages);
+    cout<< "all meessages "<<all_message<<endl;
     for (int i = 0; i < all_message.size(); i++) {
         read_message(all_message.front());
     }
