@@ -20,6 +20,7 @@
 #include <time.h>
 #include <tuple>
 #include <ctime>
+#include <queue>
 
 
 #include "File.h"
@@ -27,10 +28,15 @@
 #include "Member.h"
 #include "Message.h"
 
+#define T_period 500000 // in microseconds
+#define T_timeout 3 // in T_period
+#define T_cleanup 3 // in T_period
 #define MASTER "10.192.118.174"
+#define MAX_NUM_TARGET 4
 #define PORT "6000"
 #define MAXBUFLEN 1024
-
+#define FAIL 0
+#define ACTIVE 1
 using namespace std;
 
 void* send_sock_create(void* node);
@@ -42,7 +48,7 @@ class Node {
         int hb_counter;
         int local_time;
         time_t start_time;
-        map<string,tuple<int, int, int> > mem_list; //member -> (hb_count, timestamp, fail_flag)
+        map<string,tuple<int, int, int> > mem_list; //member -> (hb_count, timestamp, fail_flag, role)
         bool is_master; // might not need this
         string master_id;
         Logger* node_logger;
@@ -51,18 +57,22 @@ class Node {
         pthread_t send_thread;
         pthread_t receive_thread;
         string node_mode;
+        int bytes_received;
+        queue<string> qMessages;
+        vector <Member> targets;
 
         void activate();
         void join_system();
         string time_util();
         Node();
+        int get_message();
         
     private:
         string pack_membership_list();
         void send_message(string ip, string port, Message* message);
-
-        
-
+        void read_message(string msg);
+        vector <string> splitString(string s, string delimiter);
+        void process_hb(string message);
         struct hostent* get_host();
 
 };

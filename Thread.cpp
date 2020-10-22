@@ -4,9 +4,10 @@
 void* send_sock_create(void* node){
     Node* my_node = (Node*)node;
     my_node->join_system();
-    // while(my_node->node_mode == "active") {
-        
-    // }
+    while(my_node->node_mode == "active") {
+        my_node->get_message();
+        usleep(T_period);
+    }
     pthread_exit(NULL);
 
 }
@@ -58,8 +59,12 @@ void* server_sock_create(void* node){
     cout <<"waiting for message..." <<endl;
     while((num_bytes = recvfrom(socket_fd, buf, MAXBUFLEN - 1 ,0, (struct sockaddr *)&src_addr,(socklen_t*)&src_addr_len)) > 0) {
         //design different data structure for membershiplist and files.
-        
+        my_node->bytes_received += num_bytes;
+        buf[num_bytes] = '\0';
+        my_node->qMessages.push(buf);
+        bzero(buf, sizeof(buf));
     }
+    close(socket_fd);
     printf("%s", buf);
     pthread_exit(NULL);
 
