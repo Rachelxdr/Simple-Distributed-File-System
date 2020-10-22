@@ -237,7 +237,9 @@ void Node::join_system(){
     cout << "type: "<< msg_to_send->message_type <<endl;
     
     //send to master
-    send_message(MASTER, PORT, msg_to_send);
+    if (this->is_master == false) {
+        send_message(MASTER, PORT, msg_to_send);
+    }
     return;
 }
 
