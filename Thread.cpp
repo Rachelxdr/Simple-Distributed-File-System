@@ -64,10 +64,11 @@ void* server_sock_create(void* node){
     
     while((num_bytes = recvfrom(socket_fd, buf, MAXBUFLEN - 1 ,0, (struct sockaddr *)&src_addr,(socklen_t*)&src_addr_len)) > 0) {
         //design different data structure for membershiplist and files.
-        printf("%s", buf);
+
         my_node->bytes_received += num_bytes;
         buf[num_bytes] = '\0';
         my_node->qMessages.push(buf);
+        printf("message received: %s\n", buf);
         bzero(buf, sizeof(buf));
     }
     close(socket_fd);

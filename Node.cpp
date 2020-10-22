@@ -204,7 +204,7 @@ void Node::read_message(string msg){
     vector<string> splited_msg = splitString(msg, "==");
     string type = splited_msg[0];
     string message = splited_msg[1]; // id, hb, time, flag, masterid; id, hb, time, flag, masterid...
-
+    cout <<"type: "<<type<<endl;
     // if receives "JOIN" message, current node is master
     if (type == "JOIN") {
         vector<string> other_info = splitString(message, ",");
@@ -214,6 +214,7 @@ void Node::read_message(string msg){
         string new_port = new_mem_info[1];
         string mem_info = pack_membership_list();
         Message* msg_to_send = new Message("PING", mem_info);
+        cout<<"new_ip "<<new_ip<<" new_port "<<new_port<<endl;
         send_message(new_ip, new_port, msg_to_send);
 
     } else if(type == "PING") {
