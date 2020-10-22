@@ -6,6 +6,7 @@ void* send_sock_create(void* node){
     my_node->join_system();
     while(my_node->node_mode == "active") {
         cout<<"round: "<<my_node->round<<endl;
+        cout<<"local time: "<<my_node->local_time<<endl;
         my_node->round++;
         my_node->get_message();
 
