@@ -20,7 +20,7 @@ void* send_sock_create(void* node){
         my_node->update_time();
         cout<<"local time after: "<<my_node->local_time<<endl;
         my_node->update_mem_list();
-
+        
         vector<string> targets = my_node->get_gossip_targets();
         my_node->send_pings(targets);
         usleep(T_period);

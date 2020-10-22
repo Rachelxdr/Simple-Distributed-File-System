@@ -65,6 +65,9 @@ vector<string> Node::get_gossip_targets(){
 
 void Node::send_pings(vector<string> targets) {
     string mem_info = pack_membership_list();
+    cout<< "mem_info" <<mem_info <<endl;
+    // cout<<"time in mem_list: "<<to_string(get<1>(this->mem_list[this->self_member_id])) <<endl;
+
     Message* msg_to_send = new Message("PING", mem_info);
     for(string target_id : targets) {
         vector<string> id_info = splitString(target_id, ":");

@@ -31,7 +31,8 @@
 #define T_period 500000 // in microseconds
 #define T_timeout 3 // in T_period
 #define T_cleanup 3 // in T_period
-#define MASTER "172.22.158.5"
+// #define MASTER "172.22.158.5"
+#define MASTER "127.0.0.1"
 #define MAX_NUM_TARGET 4
 #define PORT "6000"
 #define MAXBUFLEN 1024
