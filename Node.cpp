@@ -37,6 +37,43 @@ int Node::get_message() {
     return 0;
 }
 
+vector<string> Node::get_gossip_targets(){
+    vector<string> all_members;
+    for (auto& element: this->mem_list){
+        string mem_id = element.first;
+        int mem_flag = get<2>(element.second);
+        if (mem_id != this->self_member_id && mem_flag == ACTIVE){
+            all_members.push_back(mem_id);
+        }
+
+    }
+
+    if (all_members.size() <= MAX_NUM_TARGET) {
+        return all_members;
+    }
+    vector<string> chosen_members;
+    for (int i = 0; i <= MAX_NUM_TARGET; i++) {
+        int random_num = rand() % all_members.size();
+        chosen_members.push_back(all_members[random_num]);
+        all_members.erase(all_members.begin() + random_num);
+    }
+    return chosen_members;
+    
+
+}
+
+void Node::send_pings(vector<string> targets) {
+    string mem_info = pack_membership_list();
+    Message* msg_to_send = new Message("PING", mem_info);
+    for(string target_id : targets) {
+        vector<string> id_info = splitString(target_id, ":");
+        string target_ip = id_info[0];
+        string target_port = id_info[1];
+        send_message(target_ip, target_port, msg_to_send);
+    }
+
+}
+
 void Node::send_message(string ip, string port, Message* msg_to_send) {
     // If current node is master, it doesn't send the join information
     if (msg_to_send->message_type == "JOIN" && this->is_master == true) {
@@ -128,6 +165,51 @@ vector<string> Node::splitString(string s, string delimiter) {
 
 }
 
+void Node::failure_detection(){
+    vector<string> to_remove;
+    for (auto& mem : this->mem_list) {
+        string mem_id = mem.first;
+        int mem_hb = get<0>(mem.second);
+        int mem_time = get<1>(mem.second);
+        int mem_flag = get<2>(mem.second);
+        // myself, skip
+        if (mem_id.compare(this->self_member_id) == 0) {
+            continue;
+        }
+
+        if (mem_flag == ACTIVE) {
+            if (this->local_time - mem_time > T_timeout) {
+                get<1>(mem.second) = this->local_time;
+                get<2>(mem.second) = FAIL;
+
+                string msg_to_log = this->time_util() + " " + mem_id + " detected as fail at local time " + to_string(this->local_time) + "\n";
+                this->node_logger->log_message(msg_to_log);
+            }
+        } else {
+            if (this->local_time - mem_time > T_cleanup) {
+                auto it = this->mem_list.find(mem_id);
+                if (it != this->mem_list.end()) {
+                   
+                    to_remove.push_back(mem_id);
+                }
+            }
+        }
+        for (uint i = 0; i < to_remove.size(); i++) {
+            auto it = this->mem_list.find(to_remove[i]);
+            if (it != this->mem_list.end()) {
+                cout << "Removed " + mem_id + " at local time " + to_string(this->local_time) << endl;
+                string msg_to_log = this->time_util() + " removed " + mem_id + " at local time " + to_string(this->local_time) + "\n";
+                this->node_logger->log_message(msg_to_log);
+                this->mem_list.erase(it);
+            }
+        }
+    }
+} 
+
+void Node::update_mem_list(){
+    get<0>(this->mem_list[this->self_member_id]) = this->hb_counter;
+    get<1>(this->mem_list[this->self_member_id]) = this->local_time;
+}
 
 void Node::process_hb(string message) {
     vector<string> mem_info = splitString(message, ";"); //id, hb, time, flag, masterid

@@ -6,8 +6,23 @@ void* send_sock_create(void* node){
     my_node->join_system();
     while(my_node->node_mode == "active") {
         my_node->get_message();
+
+        if (my_node->node_mode == "fail") {
+            pthread_exit(NULL);
+        }
+
+        my_node->failure_detection();
+        my_node->hb_counter++;
+        my_node->local_time++;
+        my_node->update_mem_list();
+
+        vector<string> targets = my_node->get_gossip_targets();
+        my_node->send_pings(targets);
         usleep(T_period);
     }
+
+
+
     pthread_exit(NULL);
 
 }
@@ -77,7 +92,7 @@ void receive_msg(void* node){
         struct sockaddr_in* src_addr_info = (struct sockaddr_in*)&src_addr;
 
         printf("message received: %s from %s\n", buf, inet_ntoa(src_addr_info->sin_addr));
-        string msg_to_log = my_node->time_util() + " Received " + to_string(num_bytes) + " bytes " + "from " + inet_ntoa(src_addr_info->sin_addr) + " : " + PORT;
+        string msg_to_log = my_node->time_util() + " Received " + to_string(num_bytes) + " bytes " + "from " + inet_ntoa(src_addr_info->sin_addr) + " : " + PORT "\n";
         my_node->node_logger->log_message(msg_to_log);
 
         bzero(buf, sizeof(buf));

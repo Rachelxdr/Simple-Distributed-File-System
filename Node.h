@@ -58,13 +58,17 @@ class Node {
         string node_mode;
         int bytes_received;
         queue<string> qMessages;
-        vector <Member> targets;
 
         void activate();
         void join_system();
         string time_util();
-        Node();
         int get_message();
+        void failure_detection();
+        void update_mem_list();
+        vector<string> get_gossip_targets();
+        void send_pings(vector<string> targets);
+
+        Node();
         
     private:
         string pack_membership_list();
