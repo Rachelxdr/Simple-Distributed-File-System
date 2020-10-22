@@ -179,7 +179,7 @@ void Node::failure_detection(){
         if (mem_id.compare(this->self_member_id) == 0) {
             continue;
         }
-
+        cout<<"checking mem: "<< mem_id<<"flag: "<<mem_flag<<endl;
         if (mem_flag == ACTIVE) {
             cout<<"checking mem: "<< mem_id<<endl;
             if (this->local_time - mem_time > T_timeout) {
