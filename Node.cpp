@@ -32,7 +32,7 @@ int Node::get_message() {
     this->node_socket->qMessages = queue<string>();
     int size = all_message.size();
     for (int i = 0; i < size; i++) {
-        // cout<< "all meessages " << all_message.front()<<endl;
+        cout<< "all meessages " << all_message.front()<<endl;
         read_message(all_message.front());
         all_message.pop();
     }
@@ -302,7 +302,7 @@ void Node::read_message(string msg){
     vector<string> splited_msg = splitString(msg, "==");
     string type = splited_msg[0];
     string message = splited_msg[1]; // id, hb, time, flag, masterid; id, hb, time, flag, masterid...
-    // cout <<"type: "<<type<<endl;
+    cout <<"type: "<<type<<endl;
     // if receives "JOIN" message, current node is master
     if (type == "JOIN") {
         vector<string> other_info = splitString(message, ",");
