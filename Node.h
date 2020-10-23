@@ -33,6 +33,9 @@
 #define T_cleanup 3 // in T_period
 #define MASTER "172.22.158.5"
 // #define MASTER "127.0.0.1"
+#define ACTIVE_NODE "active"
+#define FAILED_NODE "fail"
+#define INACTIVE_NODE "inactive"
 #define MAX_NUM_TARGET 4
 #define PORT "6000"
 #define MAXBUFLEN 1024
@@ -71,6 +74,7 @@ class Node {
         void send_pings(vector<string> targets);
         int get_time();
         void update_time();
+        void show_members();
 
         Node();
         

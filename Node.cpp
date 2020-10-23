@@ -8,7 +8,7 @@ Node::Node() {
     is_master = false;
     // host = this->get_host();
     node_logger = new Logger();
-    node_mode = "inactive";
+    node_mode = INACTIVE_NODE;
     bytes_received = 0;
     round = 0;
      // need to get local ip address
@@ -238,7 +238,7 @@ void Node::process_hb(string message) {
             // kill myself if detected as failed by others
             if (flag == FAIL) {
                 // suicide
-                this->node_mode = "fail";
+                this->node_mode = FAILED_NODE;
                 cout << "Good bye world" <<endl;
                 string msg_to_log = this->time_util() + " At " + to_string(this->local_time) + this->self_member_id + " Committed Suicide \n";
                 this->node_logger->log_message(msg_to_log);
@@ -335,7 +335,7 @@ void Node::update_time() {
 
 void Node::join_system(){
     
-    this->node_mode = "active";
+    this->node_mode = ACTIVE_NODE;
     
     //Log join info
 
@@ -357,16 +357,23 @@ void Node::join_system(){
     return;
 }
 
+void Node::show_members(){
+    string mem_str;
+    for (auto& elem : this->mem_list) {
+        string cur_mem_info;
+        string mem_id = elem.first;
+        tuple <int, int, int> mem_info = elem.second;
+        cur_mem_info = "Member ID: " + mem_id + "hb_counter: " + to_string(get<0>(mem_info)) + "local_timestamp: " + to_string(get<1>(mem_info)) +  "flag: ";
+        if (get<2>(mem_info) == FAIL) {
+            cur_mem_info += "FAIL\n";
+        } else {
+            cur_mem_info += "ACTIVE\n";
+        }
+        mem_str += cur_mem_info;
 
-// void Node::activate(){
-//     // create send thread
-//     int send_thread_ret = pthread_create(&send_thread, NULL, send_sock_create, (void*)this);
-    
-
-   
-//     // int recv_thread_ret = pthread_create(&this->receive_thread, NULL, server_sock_create, (void*)this);
-    
-// }
+    }
+    cout << mem_str << endl;
+}
 
 
 int main(int argc, char* argv[]) {
@@ -423,13 +430,32 @@ int main(int argc, char* argv[]) {
     // read inputs and process
     string cmd;
     bool joined = false;
+    int *ret;
     while(1) {
         std::cin >> cmd;
         if (cmd == "join"){
             int send_thread_ret = pthread_create(&send_thread, NULL, send_sock_create, (void*)my_node);
     
         }
-        pthread_join(send_thread, NULL);
+        if (cmd == "leave") {
+            if (my_node->node_mode.compare(ACTIVE_NODE) == 0) {
+                my_node->node_mode = INACTIVE_NODE;
+                
+                pthread_join(send_thread, (void**) ret);
+
+                cout <<"At "<<my_node->local_time<<" "<< my_node->self_member_id<<" is leaving"<<endl;
+                string msg_to_log = my_node->time_util() + " " + my_node->self_member_id + " left group\n";
+                my_node->node_logger->log_message(msg_to_log);
+                sleep(2);
+            }
+        }
+        if (cmd == "id") {
+            cout << "Node ID: "<< my_node->self_member_id<<endl;
+        }
+        if (cmd == "member") {
+            my_node->show_members();
+        }
+       
         // pthread_join(my_node->receive_thread, NULL);
 
     }

@@ -4,13 +4,13 @@
 void* send_sock_create(void* node){
     Node* my_node = (Node*)node;
     my_node->join_system();
-    while(my_node->node_mode == "active") {
+    while(my_node->node_mode == ACTIVE_NODE) {
         cout<<"round: "<<my_node->round<<endl;
         
         my_node->round++;
         my_node->get_message();
 
-        if (my_node->node_mode == "fail") {
+        if (my_node->node_mode == FAILED_NODE) {
             pthread_exit(NULL);
         }
 
