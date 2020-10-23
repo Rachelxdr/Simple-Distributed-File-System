@@ -358,9 +358,9 @@ void Node::join_system(){
 }
 
 void Node::show_members(){
-    string mem_str;
+    string mem_str = "===========================  MEMBERSHIP INFORMATION ===========================\n";
     for (auto& elem : this->mem_list) {
-        string cur_mem_info;
+        string cur_mem_info = "";
         string mem_id = elem.first;
         tuple <int, int, int> mem_info = elem.second;
         cur_mem_info = "Member ID: " + mem_id + "hb_counter: " + to_string(get<0>(mem_info)) + "local_timestamp: " + to_string(get<1>(mem_info)) +  "flag: ";
@@ -372,6 +372,7 @@ void Node::show_members(){
         mem_str += cur_mem_info;
 
     }
+    mem_str += "===============================================================================";
     cout << mem_str << endl;
 }
 
