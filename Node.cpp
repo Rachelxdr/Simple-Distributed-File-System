@@ -245,7 +245,7 @@ void Node::process_hb(string message) {
                 return;
             } 
             // update master information
-            if (mas_id.compare(this->master_id) != 0) {
+            if (this->is_master == false && mas_id.compare(this->master_id) != 0) {
 
                 cout << "Update master id " << this->master_id << " to " << mas_id <<endl;
                 string msg_to_log = this->time_util() + " At " + to_string(this->local_time) + "Update master id " + this->master_id + " to " + mas_id + "\n";
@@ -420,7 +420,10 @@ int main(int argc, char* argv[]) {
 
     // create node receive thread
     int recv_thread_ret = pthread_create(&receive_thread, NULL, server_sock_create, (void*)my_node);
-    
+    if (recv_thread_ret != 0) {
+            cout << "Error:unable to create thread," << recv_thread_ret << endl;
+            exit(-1);
+    }
     //create node member id
     time(&my_node->start_time);
     my_node->self_member_id = own.ip_address + ":" + PORT + ":" + to_string(my_node->start_time);
@@ -437,9 +440,13 @@ int main(int argc, char* argv[]) {
         cout<<"cmd: "<<cmd<<endl;
         if (cmd == "join"){
             int send_thread_ret = pthread_create(&send_thread, NULL, send_sock_create, (void*)my_node);
-    
+            if (send_thread_ret != 0) {
+                cout << "Error:unable to create thread," << send_thread_ret << endl;
+				exit(-1);
+            }
+            joined = true;
         } else if (cmd == "leave") {
-            if (my_node->node_mode.compare(ACTIVE_NODE) == 0) {
+            if (joined) {
                 my_node->node_mode = INACTIVE_NODE;
                 
                 pthread_join(send_thread, (void**) ret);
@@ -448,6 +455,7 @@ int main(int argc, char* argv[]) {
                 string msg_to_log = my_node->time_util() + " " + my_node->self_member_id + " left group\n";
                 my_node->node_logger->log_message(msg_to_log);
                 sleep(2);
+                joined = false;
             }
         } else if (cmd == "id") {
             cout << "@@@@@ Node ID: "<< my_node->self_member_id<<endl;
@@ -455,11 +463,12 @@ int main(int argc, char* argv[]) {
             my_node->show_members();
         }
        cout<<cmd<<endl;
+       cout.flush();
         // pthread_join(my_node->receive_thread, NULL);
 
     }
     pthread_kill(receive_thread, SIGUSR1);
-    if (my_node->node_mode == ACTIVE_NODE) {
+    if (joined) {
         pthread_kill(send_thread, SIGUSR1);
     }
     pthread_exit(NULL);
