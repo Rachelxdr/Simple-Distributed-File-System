@@ -21,6 +21,7 @@
 #include <tuple>
 #include <ctime>
 #include <queue>
+#include <signal.h>
 
 
 #include "File.h"
