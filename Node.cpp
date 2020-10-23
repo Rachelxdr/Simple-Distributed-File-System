@@ -433,12 +433,11 @@ int main(int argc, char* argv[]) {
     bool joined = false;
     int *ret;
     while(1) {
-        std::cin >> cmd;
+        cin >> cmd;
         if (cmd == "join"){
             int send_thread_ret = pthread_create(&send_thread, NULL, send_sock_create, (void*)my_node);
     
-        }
-        if (cmd == "leave") {
+        }else if (cmd == "leave") {
             if (my_node->node_mode.compare(ACTIVE_NODE) == 0) {
                 my_node->node_mode = INACTIVE_NODE;
                 
@@ -449,11 +448,9 @@ int main(int argc, char* argv[]) {
                 my_node->node_logger->log_message(msg_to_log);
                 sleep(2);
             }
-        }
-        if (cmd == "id") {
+        } else if (cmd == "id") {
             cout << "Node ID: "<< my_node->self_member_id<<endl;
-        }
-        if (cmd == "member") {
+        } else if (cmd == "member") {
             my_node->show_members();
         }
        
