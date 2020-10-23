@@ -268,11 +268,19 @@ void Node::process_hb(string message) {
             tuple <int, int, int> mem_to_change = this->mem_list[id];
             if (get<2>(mem_to_change) == ACTIVE) {
                 if (flag == FAIL) {
-                    tuple <int, int, int> updated_info(hb, this->local_time, FAIL);
-                    this->mem_list[id] = updated_info;
-                    cout << "Member received as failed "<< id << " at " << this->local_time <<endl;
-                    string msg_to_log = this->time_util() + " At " + to_string(this->local_time) + id + " received as failed \n";
-                    this->node_logger->log_message(msg_to_log);
+                    if (id == this->master_id) {
+
+                        cout <<"master failed" <<endl;
+
+
+                    } else{
+                        tuple <int, int, int> updated_info(hb, this->local_time, FAIL);
+                        this->mem_list[id] = updated_info;
+                        cout << "Member received as failed "<< id << " at " << this->local_time <<endl;
+                        string msg_to_log = this->time_util() + " At " + to_string(this->local_time) + id + " received as failed \n";
+                        this->node_logger->log_message(msg_to_log);
+                    }
+                    
                 } else {
                     int current_hb = get<0>(mem_to_change);
                     if (hb > current_hb) {
@@ -430,6 +438,8 @@ int main(int argc, char* argv[]) {
     my_node->mem_list[my_node->self_member_id] = make_tuple(my_node->hb_counter, my_node->local_time, ACTIVE);
     if (my_node->is_master) {
         my_node->master_id = my_node->self_member_id;
+    } else {
+        my_node->reelect_token = my_node->get_time() + rand() % 100;
     }
     // read inputs and process
     string cmd;
@@ -437,7 +447,6 @@ int main(int argc, char* argv[]) {
     int *ret;
     while(1) {
         cin >> cmd;
-        cout<<"cmd: "<<cmd<<endl;
         if (cmd == "join"){
             int send_thread_ret = pthread_create(&send_thread, NULL, send_sock_create, (void*)my_node);
             if (send_thread_ret != 0) {
@@ -463,7 +472,7 @@ int main(int argc, char* argv[]) {
             my_node->show_members();
         }
        cout<<cmd<<endl;
-       cout.flush();
+    //    cout.flush();
         // pthread_join(my_node->receive_thread, NULL);
 
     }

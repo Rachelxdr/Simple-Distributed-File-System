@@ -64,6 +64,7 @@ class Node {
         int bytes_received;
         int round;
         queue<string> qMessages;
+        int reelect_token;
 
         void activate();
         void join_system();
