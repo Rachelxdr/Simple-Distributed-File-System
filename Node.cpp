@@ -9,9 +9,8 @@ Node::Node() {
     // host = this->get_host();
     node_logger = new Logger();
     node_mode = INACTIVE_NODE;
-    // byte_received = 0;
+    bytes_received = 0;
     round = 0;
-    node_socket = new Socket();
      // need to get local ip address
     
 }
@@ -28,11 +27,11 @@ string Node::pack_membership_list(){
 
 
 int Node::get_message() {
-    queue<string> all_message(this->node_socket->qMessages);
-    this->node_socket->qMessages = queue<string>();
+    queue<string> all_message(this->qMessages);
+    this->qMessages = queue<string>();
     int size = all_message.size();
     for (int i = 0; i < size; i++) {
-        cout<< "all meessages " << all_message.front()<<endl;
+        // cout<< "all meessages " << all_message.front()<<endl;
         read_message(all_message.front());
         all_message.pop();
     }
@@ -74,79 +73,78 @@ void Node::send_pings(vector<string> targets) {
         vector<string> id_info = splitString(target_id, ":");
         string target_ip = id_info[0];
         string target_port = id_info[1];
-        string msg = msg_to_send->make_str_msg();
-        this->node_socket->send_message(target_ip, target_port, msg);
+        send_message(target_ip, target_port, msg_to_send);
     }
 
 }
 
-// void Node::send_message(string ip, string port, Message* msg_to_send) {
-//     // If current node is master, it doesn't send the join information
-//     if (msg_to_send->message_type == "JOIN" && this->is_master == true) {
-//         // cout << "master"<<endl;
-//         return;
-//     }
-//     // 
-//     // string log_msg = this->time_util() + " " + this->self_member_id + " sent to " + MASTER + ":" + PORT + "\n";
-//     // this->node_logger->log_message(log_msg);
-//     // cout<<"target ip: "<<ip<<"target port: "<<port<<endl;
+void Node::send_message(string ip, string port, Message* msg_to_send) {
+    // If current node is master, it doesn't send the join information
+    if (msg_to_send->message_type == "JOIN" && this->is_master == true) {
+        // cout << "master"<<endl;
+        return;
+    }
+    // 
+    // string log_msg = this->time_util() + " " + this->self_member_id + " sent to " + MASTER + ":" + PORT + "\n";
+    // this->node_logger->log_message(log_msg);
+    // cout<<"target ip: "<<ip<<"target port: "<<port<<endl;
     
-//     int sock_fd;
-//     struct addrinfo hints, *servinfo, *p;
-//     int num_bytes;
+    int sock_fd;
+    struct addrinfo hints, *servinfo, *p;
+    int num_bytes;
     
-//     memset(&hints, 0, sizeof(hints));
+    memset(&hints, 0, sizeof(hints));
 
-//     hints.ai_family = AF_UNSPEC;
-//     hints.ai_socktype = SOCK_DGRAM;
-//     // hints.ai_socktype = SOCK_STREAM;
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_DGRAM;
+    // hints.ai_socktype = SOCK_STREAM;
 
-//     // cout << "calling get addr info"<<endl;
-//     int get_addr_info_ret = getaddrinfo(ip.c_str(), port.c_str(), &hints, &servinfo);
-//     if (get_addr_info_ret != 0) {
-//         cout << "get addr info error"<<endl;
-//         fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(get_addr_info_ret));
-//         return;
-//     }
+    // cout << "calling get addr info"<<endl;
+    int get_addr_info_ret = getaddrinfo(ip.c_str(), port.c_str(), &hints, &servinfo);
+    if (get_addr_info_ret != 0) {
+        cout << "get addr info error"<<endl;
+        fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(get_addr_info_ret));
+        return;
+    }
 
-//     // cout << "calling socket"<<endl;
-//     for (p = servinfo; p != NULL; p = p->ai_next) {
-//         sock_fd = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
-//         if (sock_fd == -1) {
-//             perror("create send socket");
-//             continue;
-//         } 
-//         break;
-//     }
+    // cout << "calling socket"<<endl;
+    for (p = servinfo; p != NULL; p = p->ai_next) {
+        sock_fd = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
+        if (sock_fd == -1) {
+            perror("create send socket");
+            continue;
+        } 
+        break;
+    }
 
-//     // cout << "finished socket loop"<<endl;
-//     if (p == NULL) {
-//         // cout << "send socket not found"<<endl;
-//         perror("failed to bind send socket");
-//         return;
-//     }
+    // cout << "finished socket loop"<<endl;
+    if (p == NULL) {
+        // cout << "send socket not found"<<endl;
+        perror("failed to bind send socket");
+        return;
+    }
     
-//     //process and send message
-//     string msg = msg_to_send->make_str_msg();
-//     struct sockaddr_in* result_addr = (struct sockaddr_in*) p->ai_addr;
-//     num_bytes = sendto(sock_fd, msg.c_str(), strlen(msg.c_str()), 0,p->ai_addr, p->ai_addrlen);
+    //process and send message
+    string msg = msg_to_send->make_str_msg();
+    struct sockaddr_in* result_addr = (struct sockaddr_in*) p->ai_addr;
+    num_bytes = sendto(sock_fd, msg.c_str(), strlen(msg.c_str()), 0,p->ai_addr, p->ai_addrlen);
     
-//     cout <<"byte sent "<< num_bytes<<endl;
-//     if (num_bytes == -1){
-//         perror("error sending message");
-//         exit(1);
-//     }
-//     // cout<< "message sent: "<< msg <<endl;
+    cout <<"byte sent "<< num_bytes<<endl;
+    if (num_bytes == -1){
+        perror("error sending message");
+    }
+    // cout<< "message sent: "<< msg <<endl;
 
-//     // Log sending information
-//     string msg_to_log = this->time_util() + " " + "sent " + msg + " to  " + ip + ":" + port +"\n"; 
-//     this->node_logger->log_message(msg_to_log);
+    // Log sending information
+    string msg_to_log = this->time_util() + " " + "sent " + msg + " to  " + ip + ":" + port +"\n"; 
+    this->node_logger->log_message(msg_to_log);
 
 
-//     freeaddrinfo(servinfo);
-//     close(sock_fd);
+    freeaddrinfo(servinfo);
+    close(sock_fd);
+    return;
 
-// }
+}
 
 string Node::time_util() {
     time_t result = time(nullptr);
@@ -302,7 +300,7 @@ void Node::read_message(string msg){
     vector<string> splited_msg = splitString(msg, "==");
     string type = splited_msg[0];
     string message = splited_msg[1]; // id, hb, time, flag, masterid; id, hb, time, flag, masterid...
-    cout <<"type: "<<type<<endl;
+    // cout <<"type: "<<type<<endl;
     // if receives "JOIN" message, current node is master
     if (type == "JOIN") {
         vector<string> other_info = splitString(message, ",");
@@ -312,9 +310,8 @@ void Node::read_message(string msg){
         string new_port = new_mem_info[1];
         string mem_info = pack_membership_list();
         Message* msg_to_send = new Message("PING", mem_info);
-        string msg = msg_to_send->make_str_msg();
         // cout<<"new_ip "<<new_ip<<" new_port "<<new_port<<endl;
-        this->node_socket->send_message(new_ip, new_port, msg);
+        send_message(new_ip, new_port, msg_to_send);
 
     } else if(type == "PING") {
         process_hb(message);
@@ -354,8 +351,7 @@ void Node::join_system(){
     
     //send to master
     if (this->is_master == false) {
-        string msg = msg_to_send->make_str_msg();
-        this->node_socket->send_message(MASTER, PORT, msg);
+        send_message(MASTER, PORT, msg_to_send);
     }
     return;
 }

@@ -28,7 +28,6 @@
 #include "Logger.h"
 #include "Member.h"
 #include "Message.h"
-#include "Socket.h"
 
 #define T_period 500000 // in microseconds
 #define T_timeout 3 // in T_period
@@ -62,13 +61,11 @@ class Node {
         // vector<File> local_files;
         struct hostent* host;
         string node_mode;
-        // int bytes_received;
+        int bytes_received;
         int round;
-        // queue<string> qMessages;
+        queue<string> qMessages;
         int reelect_token;
         int total_mem;
-        Socket* node_socket;
-    
 
         void activate();
         void join_system();
