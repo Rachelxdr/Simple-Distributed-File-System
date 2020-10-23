@@ -268,16 +268,16 @@ void Node::process_hb(string message) {
             tuple <int, int, int> mem_to_change = this->mem_list[id];
             if (get<2>(mem_to_change) == ACTIVE) {
                 if (flag == FAIL) {
-                    get<2>(mem_to_change) = FAIL;
-                    get<1>(mem_to_change) = this->local_time;
+                    tuple <int, int, int> updated_info(hb, this->local_time, FAIL);
+                    this->mem_list[id] = updated_info;
                     cout << "Member received as failed "<< id << " at " << this->local_time <<endl;
                     string msg_to_log = this->time_util() + " At " + to_string(this->local_time) + id + " received as failed \n";
                     this->node_logger->log_message(msg_to_log);
                 } else {
                     int current_hb = get<0>(mem_to_change);
                     if (hb > current_hb) {
-                        current_hb = hb;
-                        get<1>(mem_to_change) = this->local_time;
+                        tuple <int, int, int> updated_info(hb, this->local_time, ACTIVE);
+                        this->mem_list[id] = updated_info;
                         string msg_to_log = this->time_util() + " At " + to_string(this->local_time) + " update hb counter " + id + "\n";
                         this->node_logger->log_message(msg_to_log);
                     }
