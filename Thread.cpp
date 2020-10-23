@@ -6,7 +6,7 @@ void* send_sock_create(void* node){
     my_node->join_system();
     while(my_node->node_mode == ACTIVE_NODE) {
         cout<<"[ROUND]: "<<my_node->round<<endl;
-        
+        cout<<"[NUM MEMBER]: " << my_node->total_mem<<endl;
         my_node->round++;
         my_node->get_message();
 
