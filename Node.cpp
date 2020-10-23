@@ -433,6 +433,7 @@ int main(int argc, char* argv[]) {
     bool joined = false;
     int *ret;
     while(1) {
+        cout<<"cmd: "<<cmd<<endl;
         cin >> cmd;
         if (cmd == "join"){
             int send_thread_ret = pthread_create(&send_thread, NULL, send_sock_create, (void*)my_node);
