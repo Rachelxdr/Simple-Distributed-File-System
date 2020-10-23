@@ -449,13 +449,17 @@ int main(int argc, char* argv[]) {
                 sleep(2);
             }
         } else if (cmd == "id") {
-            cout << "Node ID: "<< my_node->self_member_id<<endl;
+            cout << "@@@@@ Node ID: "<< my_node->self_member_id<<endl;
         } else if (cmd == "member") {
             my_node->show_members();
         }
        
         // pthread_join(my_node->receive_thread, NULL);
 
+    }
+    pthread_kill(receive_thread, SIGUSR1);
+    if (my_node->node_mode == ACTIVE_NODE) {
+        pthread_kill(send_thread, SIGUSR1);
     }
     pthread_exit(NULL);
     return 0;
