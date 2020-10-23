@@ -438,7 +438,7 @@ int main(int argc, char* argv[]) {
         if (cmd == "join"){
             int send_thread_ret = pthread_create(&send_thread, NULL, send_sock_create, (void*)my_node);
     
-        }else if (cmd == "leave") {
+        } else if (cmd == "leave") {
             if (my_node->node_mode.compare(ACTIVE_NODE) == 0) {
                 my_node->node_mode = INACTIVE_NODE;
                 
@@ -454,7 +454,7 @@ int main(int argc, char* argv[]) {
         } else if (cmd == "member") {
             my_node->show_members();
         }
-       
+       cout<<cmd<<endl;
         // pthread_join(my_node->receive_thread, NULL);
 
     }
