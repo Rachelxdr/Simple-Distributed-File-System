@@ -5,7 +5,7 @@ void* send_sock_create(void* node){
     Node* my_node = (Node*)node;
     my_node->join_system();
     while(my_node->node_mode == ACTIVE_NODE) {
-        cout<<"round: "<<my_node->round<<endl;
+        cout<<"[ROUND]: "<<my_node->round<<endl;
         
         my_node->round++;
         my_node->get_message();
@@ -16,9 +16,9 @@ void* send_sock_create(void* node){
 
         my_node->failure_detection();
         my_node->hb_counter++;
-        cout<<"local time before: "<<my_node->local_time<<endl;
+        // cout<<"local time before: "<<my_node->local_time<<endl;
         my_node->update_time();
-        cout<<"local time after: "<<my_node->local_time<<endl;
+        // cout<<"local time after: "<<my_node->local_time<<endl;
         my_node->update_mem_list();
         
         vector<string> targets = my_node->get_gossip_targets();
@@ -96,7 +96,7 @@ void receive_msg(void* node){
         
         struct sockaddr_in* src_addr_info = (struct sockaddr_in*)&src_addr;
 
-        printf("message received: %s from %s\n", buf, inet_ntoa(src_addr_info->sin_addr));
+        printf("[RECEIVED MESSAGE]: message received: %s from %s\n", buf, inet_ntoa(src_addr_info->sin_addr));
         string msg_to_log = my_node->time_util() + " Received " + to_string(num_bytes) + " bytes " + "from " + inet_ntoa(src_addr_info->sin_addr) + " : " + PORT "\n";
         my_node->node_logger->log_message(msg_to_log);
 

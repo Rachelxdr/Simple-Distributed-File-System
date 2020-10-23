@@ -31,7 +31,7 @@ int Node::get_message() {
     this->qMessages = queue<string>();
     int size = all_message.size();
     for (int i = 0; i < size; i++) {
-        cout<< "all meessages " << all_message.front()<<endl;
+        // cout<< "all meessages " << all_message.front()<<endl;
         read_message(all_message.front());
         all_message.pop();
     }
@@ -65,7 +65,7 @@ vector<string> Node::get_gossip_targets(){
 
 void Node::send_pings(vector<string> targets) {
     string mem_info = pack_membership_list();
-    cout<< "mem_info" <<mem_info <<endl;
+    // cout<< "mem_info" <<mem_info <<endl;
     // cout<<"time in mem_list: "<<to_string(get<1>(this->mem_list[this->self_member_id])) <<endl;
 
     Message* msg_to_send = new Message("PING", mem_info);
@@ -81,13 +81,13 @@ void Node::send_pings(vector<string> targets) {
 void Node::send_message(string ip, string port, Message* msg_to_send) {
     // If current node is master, it doesn't send the join information
     if (msg_to_send->message_type == "JOIN" && this->is_master == true) {
-        cout << "master"<<endl;
+        // cout << "master"<<endl;
         return;
     }
     // 
     // string log_msg = this->time_util() + " " + this->self_member_id + " sent to " + MASTER + ":" + PORT + "\n";
     // this->node_logger->log_message(log_msg);
-    cout<<"target ip: "<<ip<<"target port: "<<port<<endl;
+    // cout<<"target ip: "<<ip<<"target port: "<<port<<endl;
     
     int sock_fd;
     struct addrinfo hints, *servinfo, *p;
@@ -126,9 +126,7 @@ void Node::send_message(string ip, string port, Message* msg_to_send) {
     
     //process and send message
     string msg = msg_to_send->make_str_msg();
-    cout << "sending message: "<< msg<< endl;
     struct sockaddr_in* result_addr = (struct sockaddr_in*) p->ai_addr;
-    printf("addr: %s", inet_ntoa(result_addr->sin_addr));
     num_bytes = sendto(sock_fd, msg.c_str(), strlen(msg.c_str()), 0,p->ai_addr, p->ai_addrlen);
     
     cout <<"byte sent "<< num_bytes<<endl;
@@ -171,7 +169,6 @@ vector<string> Node::splitString(string s, string delimiter) {
 
 void Node::failure_detection(){
     vector<string> to_remove;
-    cout<<"failure detection"<<endl;
     for (auto& mem : this->mem_list) {
         string mem_id = mem.first;
         int mem_hb = get<0>(mem.second);
@@ -182,15 +179,11 @@ void Node::failure_detection(){
         if (mem_id.compare(this->self_member_id) == 0) {
             continue;
         }
-        cout<<"checking mem: "<< mem_id<<"flag: "<<mem_flag<<endl;
         if (mem_flag == ACTIVE) {
-            cout<<"local: "<<this->local_time<<endl;
-            cout<<"mem: "<<mem_time <<endl;
             if (this->local_time - mem_time > T_timeout) {
-
-                get<1>(mem.second) = this->local_time;
-                get<2>(mem.second) = FAIL;
-
+                tuple <int, int, int> new_info(mem_hb, this->local_time, FAIL);
+                this->mem_list[mem_id] = new_info;
+                cout << "[FAILURE DETECTION]: member "<< mem_id <<" detected as failed "<<endl;
                 string msg_to_log = this->time_util() + " " + mem_id + " detected as fail at local time " + to_string(this->local_time) + "\n";
                 this->node_logger->log_message(msg_to_log);
             }
@@ -206,7 +199,7 @@ void Node::failure_detection(){
         for (uint i = 0; i < to_remove.size(); i++) {
             auto it = this->mem_list.find(to_remove[i]);
             if (it != this->mem_list.end()) {
-                cout << "Removed " + mem_id + " at local time " + to_string(this->local_time) << endl;
+                cout << "[REMOVE]: Removed " + mem_id + " at local time " + to_string(this->local_time) << endl;
                 string msg_to_log = this->time_util() + " removed " + mem_id + " at local time " + to_string(this->local_time) + "\n";
                 this->node_logger->log_message(msg_to_log);
                 this->mem_list.erase(it);
@@ -260,8 +253,8 @@ void Node::process_hb(string message) {
         // new member
         if (it == this->mem_list.end() && flag == ACTIVE) {
             this->mem_list[id] = make_tuple(hb, this->local_time, flag);
-        
-            cout << "New member: "<< id << " at " << this->local_time <<endl;
+            this->total_mem++;
+            cout << "[NEW MEMBER]: "<< id << " at " << this->local_time <<endl;
             string msg_to_log = this->time_util() + " At " + to_string(this->local_time) + id + " joined membership list \n";
             this->node_logger->log_message(msg_to_log);
         } else if (it != this->mem_list.end()) {
@@ -270,13 +263,13 @@ void Node::process_hb(string message) {
                 if (flag == FAIL) {
                     if (id == this->master_id) {
 
-                        cout <<"master failed" <<endl;
+                        cout <<"[FAILED INFO MESSAGE]: master failed" <<endl;
 
 
                     } else{
                         tuple <int, int, int> updated_info(hb, this->local_time, FAIL);
                         this->mem_list[id] = updated_info;
-                        cout << "Member received as failed "<< id << " at " << this->local_time <<endl;
+                        cout << "[FAILED INFO MESSAGE]: Member received as failed "<< id << " at " << this->local_time <<endl;
                         string msg_to_log = this->time_util() + " At " + to_string(this->local_time) + id + " received as failed \n";
                         this->node_logger->log_message(msg_to_log);
                     }
@@ -307,7 +300,7 @@ void Node::read_message(string msg){
     vector<string> splited_msg = splitString(msg, "==");
     string type = splited_msg[0];
     string message = splited_msg[1]; // id, hb, time, flag, masterid; id, hb, time, flag, masterid...
-    cout <<"type: "<<type<<endl;
+    // cout <<"type: "<<type<<endl;
     // if receives "JOIN" message, current node is master
     if (type == "JOIN") {
         vector<string> other_info = splitString(message, ",");
@@ -317,7 +310,7 @@ void Node::read_message(string msg){
         string new_port = new_mem_info[1];
         string mem_info = pack_membership_list();
         Message* msg_to_send = new Message("PING", mem_info);
-        cout<<"new_ip "<<new_ip<<" new_port "<<new_port<<endl;
+        // cout<<"new_ip "<<new_ip<<" new_port "<<new_port<<endl;
         send_message(new_ip, new_port, msg_to_send);
 
     } else if(type == "PING") {
@@ -330,8 +323,6 @@ void Node::read_message(string msg){
 int Node::get_time() {
     time_t time_buf;
     time(&time_buf);
-    cout <<"time function: "<<time_buf<<endl;
-    cout<< "int" <<static_cast<int>(time_buf)<<endl;
     return static_cast<int>(time_buf);
 }
 
@@ -346,7 +337,7 @@ void Node::join_system(){
     this->node_mode = ACTIVE_NODE;
     
     //Log join info
-
+    this->total_mem = 1;
     this->local_time = get_time();
     string message_to_log = this->time_util() + " JOIN: " + this->self_member_id + "\n";
     this->node_logger->log_message(message_to_log);
@@ -354,9 +345,9 @@ void Node::join_system(){
     // Ping master so that other members know the ndoe join
     Member master(MASTER, PORT);
     string mem_info = pack_membership_list();
-    cout << "mem_info: "<<mem_info<<endl;
+    // cout << "mem_info: "<<mem_info<<endl;
     Message* msg_to_send = new Message("JOIN", mem_info);
-    cout << "type: "<< msg_to_send->message_type <<endl;
+    // cout << "type: "<< msg_to_send->message_type <<endl;
     
     //send to master
     if (this->is_master == false) {
@@ -392,14 +383,14 @@ int main(int argc, char* argv[]) {
         std::cout << "Invalid format" <<endl;
         exit(1);
     }
-    cout<< "running" <<endl;
+    // cout<< "running" <<endl;
     // create a node
     Node* my_node = new Node();
     
     // Assign master
     if (argc != 1){
         my_node->is_master = true;
-        cout <<"master: "<< my_node->is_master <<endl;
+        // cout <<"master: "<< my_node->is_master <<endl;
     }
     // set up host name for current node
     char host[100] = {0};
@@ -423,7 +414,7 @@ int main(int argc, char* argv[]) {
 
     //create node self member
     Member own(inet_ntoa(*(struct in_addr*)my_node->host->h_addr_list[0]), PORT, my_node->local_time, my_node->hb_counter);
-    cout <<"debug" <<endl;
+    // cout <<"debug" <<endl;
     my_node->self_member = own;
 
     // create node receive thread
