@@ -135,7 +135,7 @@ void Node::receive_msg(){
         
         struct sockaddr_in* src_addr_info = (struct sockaddr_in*)&src_addr;
 
-        printf("[RECEIVE]: message received from: %s\n", inet_ntoa(src_addr_info->sin_addr));
+        // printf("[RECEIVE]: message received from: %s\n", inet_ntoa(src_addr_info->sin_addr));
         string msg_to_log = this->time_util() + " Received " + to_string(num_bytes) + " bytes " + "from " + inet_ntoa(src_addr_info->sin_addr) + " : " + PORT "\n";
         this->node_logger->log_message(msg_to_log);
 
