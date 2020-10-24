@@ -226,10 +226,11 @@ void Node::process_hb(string message) {
         string id = elem_entry[0];
         cout<<"id: "<<id<<endl;
         string mem_count = elem_entry[1];
+        cout <<"mem_count: "<<mem_count<<endl;
         vector<string> elem_list = splitString(mem_count, ",");
-        int hb = stoi(elem_list[1]);
-        int time = stoi(elem_list[2]);
-        int flag = stoi(elem_list[3]);
+        int hb = stoi(elem_list[0]);
+        int time = stoi(elem_list[1]);
+        int flag = stoi(elem_list[2]);
         // string mas_id = elem_list[4];
         cout <<"finished splitting" <<endl;
         // information of myself
