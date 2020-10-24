@@ -31,7 +31,7 @@ int Node::get_message() {
     this->qMessages = queue<string>();
     int size = all_message.size();
     for (int i = 0; i < size; i++) {
-        cout<<"cur message"<<all_message.front()<<endl;
+        // cout<<"cur message"<<all_message.front()<<endl;
         read_message(all_message.front());
         all_message.pop();
     }
@@ -221,18 +221,18 @@ void Node::process_hb(string message) {
         if (mem.size() == 0) {
             continue;
         }
-        cout<<"mem: "<<mem<<endl;
+        // cout<<"mem: "<<mem<<endl;
         vector<string> elem_entry = splitString(mem, "||");
         string id = elem_entry[0];
-        cout<<"id: "<<id<<endl;
+        // cout<<"id: "<<id<<endl;
         string mem_count = elem_entry[1];
-        cout <<"mem_count: "<<mem_count<<endl;
+        // cout <<"mem_count: "<<mem_count<<endl;
         vector<string> elem_list = splitString(mem_count, ",");
         int hb = stoi(elem_list[0]);
         int time = stoi(elem_list[1]);
         int flag = stoi(elem_list[2]);
         // string mas_id = elem_list[4];
-        cout <<"finished splitting" <<endl;
+        // cout <<"finished splitting" <<endl;
         // information of myself
         if (id.compare(this->self_member_id) == 0) {
             // kill myself if detected as failed by others
@@ -309,7 +309,7 @@ void Node::read_message(string msg){
     string message = splited_msg[1]; // id, hb, time, flag, masterid; id, hb, time, flag, masterid...
     // cout <<"type: "<<type<<endl;
     // if receives "JOIN" message, current node is master
-    cout<<"finished parsing"<<endl;
+    // cout<<"finished parsing"<<endl;
     if (type == "JOIN") {
         vector<string> other_info = splitString(message, ",");
         string other_id = other_info[0];
