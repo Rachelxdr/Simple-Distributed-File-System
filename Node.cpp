@@ -221,8 +221,10 @@ void Node::process_hb(string message) {
         if (mem.size() == 0) {
             continue;
         }
+        cout<<"mem: "<<mem<<endl;
         vector<string> elem_entry = splitString(mem, "||");
         string id = elem_entry[0];
+        cout<<"id: "<<id<<endl;
         vector<string> elem_list = splitString(mem, ",");
         int hb = stoi(elem_list[1]);
         int time = stoi(elem_list[2]);
