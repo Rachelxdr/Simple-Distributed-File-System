@@ -136,7 +136,7 @@ void Node::receive_msg(){
         struct sockaddr_in* src_addr_info = (struct sockaddr_in*)&src_addr;
 
         // printf("[RECEIVE]: message received from: %s\n", inet_ntoa(src_addr_info->sin_addr));
-        string msg_to_log = this->time_util() + " Received " + to_string(num_bytes) + " bytes " + "from " + inet_ntoa(src_addr_info->sin_addr) + " : " + PORT "\n";
+        string msg_to_log = this->time_util() + "[RECEIVE]: Received " + to_string(num_bytes) + " bytes " + "from " + inet_ntoa(src_addr_info->sin_addr) + " : " + PORT "\n";
         this->node_logger->log_message(msg_to_log);
 
         bzero(buf, sizeof(buf));
@@ -205,7 +205,7 @@ void Node::send_message(string ip, string port, Message* msg_to_send) {
 
     // Log sending information
     cout <<"[SEND]: to" << ip << ":"<<port<<endl;
-    string msg_to_log = this->time_util() + " " + "sent " + msg + " to  " + ip + ":" + port +"\n"; 
+    string msg_to_log = this->time_util() + " " + "[SEND]: sent to  " + ip + ":" + port +"\n"; 
     this->node_logger->log_message(msg_to_log);
 
 
@@ -253,7 +253,7 @@ void Node::failure_detection(){
                 tuple <int, int, int> new_info(mem_hb, this->local_time, FAIL);
                 this->mem_list[mem_id] = new_info;
                 cout << "[FAILURE DETECTION]: member "<< mem_id <<" detected as failed "<<endl;
-                string msg_to_log = this->time_util() + " " + mem_id + " detected as fail at local time " + to_string(this->local_time) + "\n";
+                string msg_to_log = this->time_util() + " " + mem_id + "[FAILURE DETECTION]: detected as fail at local time " + to_string(this->local_time) + "\n";
                 this->node_logger->log_message(msg_to_log);
             }
         } else {
@@ -269,7 +269,7 @@ void Node::failure_detection(){
             auto it = this->mem_list.find(to_remove[i]);
             if (it != this->mem_list.end()) {
                 cout << "[REMOVE]: Removed " + mem_id + " at local time " + to_string(this->local_time) << endl;
-                string msg_to_log = this->time_util() + " removed " + mem_id + " at local time " + to_string(this->local_time) + "\n";
+                string msg_to_log = this->time_util() + "[REMOVE]: removed " + mem_id + " at local time " + to_string(this->local_time) + "\n";
                 this->node_logger->log_message(msg_to_log);
                 this->mem_list.erase(it);
             }
@@ -307,7 +307,7 @@ void Node::process_hb(string message) {
                 // suicide
                 this->node_mode = FAILED_NODE;
                 cout << "Good bye world" <<endl;
-                string msg_to_log = this->time_util() + " At " + to_string(this->local_time) + this->self_member_id + " Committed Suicide \n";
+                string msg_to_log = this->time_util() + "[SUICIDE]: At " + to_string(this->local_time) + this->self_member_id + " Committed Suicide \n";
                 this->node_logger->log_message(msg_to_log);
                 return;
             } 
@@ -344,7 +344,7 @@ void Node::process_hb(string message) {
                         tuple <int, int, int> updated_info(hb, this->local_time, FAIL);
                         this->mem_list[id] = updated_info;
                         cout << "[FAILED INFO MESSAGE]: Member received as failed "<< id << " at " << this->local_time <<endl;
-                        string msg_to_log = this->time_util() + " At " + to_string(this->local_time) + id + " received as failed \n";
+                        string msg_to_log = this->time_util() + "[RECEIVED FAIL]: At " + to_string(this->local_time) + id + " received as failed \n";
                         this->node_logger->log_message(msg_to_log);
                     }
                     
@@ -353,7 +353,7 @@ void Node::process_hb(string message) {
                     if (hb > current_hb) {
                         tuple <int, int, int> updated_info(hb, this->local_time, ACTIVE);
                         this->mem_list[id] = updated_info;
-                        string msg_to_log = this->time_util() + " At " + to_string(this->local_time) + " update hb counter " + id + "\n";
+                        string msg_to_log = this->time_util() + "[UPDATE HB]: At " + to_string(this->local_time) + " update hb counter " + id + "\n";
                         this->node_logger->log_message(msg_to_log);
                     }
 
@@ -414,7 +414,7 @@ void Node::join_system(){
     //Log join info
     this->total_mem = 1;
     this->local_time = get_time();
-    string message_to_log = this->time_util() + " JOIN: " + this->self_member_id + "\n";
+    string message_to_log = this->time_util() + "[JOIN]: JOIN: " + this->self_member_id + "\n";
     this->node_logger->log_message(message_to_log);
 
     // Ping master so that other members know the ndoe join
@@ -527,7 +527,7 @@ int main(int argc, char* argv[]) {
                 pthread_join(send_thread, (void**) ret);
 
                 cout <<"At "<<my_node->local_time<<" "<< my_node->self_member_id<<" is leaving"<<endl;
-                string msg_to_log = my_node->time_util() + " " + my_node->self_member_id + " left group\n";
+                string msg_to_log = my_node->time_util() + " [LEAVE]:" + my_node->self_member_id + " left group\n";
                 my_node->node_logger->log_message(msg_to_log);
                 sleep(2);
                 joined = false;
