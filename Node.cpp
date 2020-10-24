@@ -31,9 +31,11 @@ int Node::get_message() {
     this->qMessages = queue<string>();
     int size = all_message.size();
     for (int i = 0; i < size; i++) {
+        cout<<"cur message"<<all_message.front()<<endl;
         read_message(all_message.front());
         all_message.pop();
     }
+
     return 0;
 }
 
