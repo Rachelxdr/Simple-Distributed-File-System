@@ -225,7 +225,8 @@ void Node::process_hb(string message) {
         vector<string> elem_entry = splitString(mem, "||");
         string id = elem_entry[0];
         cout<<"id: "<<id<<endl;
-        vector<string> elem_list = splitString(elem_entry, ",");
+        string mem_count = elem_entry[1];
+        vector<string> elem_list = splitString(mem_count, ",");
         int hb = stoi(elem_list[1]);
         int time = stoi(elem_list[2]);
         int flag = stoi(elem_list[3]);
