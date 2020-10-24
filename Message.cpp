@@ -20,6 +20,6 @@ string Message::make_str_msg(){
     string str_msg = this->message_type + "==" + this->message;
     
     // str_msg += this->message;
-    cout <<"message to send: "<<str_msg<<endl;
+    // cout <<"message to send: "<<str_msg<<endl;
     return str_msg;
 }

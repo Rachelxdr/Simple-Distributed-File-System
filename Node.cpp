@@ -20,7 +20,7 @@ string Node::pack_membership_list(){
     for (auto& element: this->mem_list) {
         string key = element.first;
         tuple <int, int, int> value = element.second;
-        mem_info += key+ "," + to_string(get<0>(value)) + "," + to_string(get<1>(value)) + "," + to_string(get<2>(value)) + "," + this->master_id + ";";
+        mem_info += key+ "::" + to_string(get<0>(value)) + "," + to_string(get<1>(value)) + "," + to_string(get<2>(value)) + ";";
     }
     return mem_info;
 }
@@ -31,7 +31,6 @@ int Node::get_message() {
     this->qMessages = queue<string>();
     int size = all_message.size();
     for (int i = 0; i < size; i++) {
-        // cout<< "all meessages " << all_message.front()<<endl;
         read_message(all_message.front());
         all_message.pop();
     }
@@ -136,6 +135,7 @@ void Node::send_message(string ip, string port, Message* msg_to_send) {
     // cout<< "message sent: "<< msg <<endl;
 
     // Log sending information
+    cout <<"[SEND]: to" << ip << ":"<<port<<endl;
     string msg_to_log = this->time_util() + " " + "sent " + msg + " to  " + ip + ":" + port +"\n"; 
     this->node_logger->log_message(msg_to_log);
 
@@ -219,12 +219,13 @@ void Node::process_hb(string message) {
         if (mem.size() == 0) {
             continue;
         }
+        vector<string> elem_entry = splitString(mem, "::");
+        string id = elem_entry[0];
         vector<string> elem_list = splitString(mem, ",");
-        string id = elem_list[0];
         int hb = stoi(elem_list[1]);
         int time = stoi(elem_list[2]);
         int flag = stoi(elem_list[3]);
-        string mas_id = elem_list[4];
+        // string mas_id = elem_list[4];
 
         // information of myself
         if (id.compare(this->self_member_id) == 0) {
@@ -238,14 +239,14 @@ void Node::process_hb(string message) {
                 return;
             } 
             // update master information
-            if (this->is_master == false && mas_id.compare(this->master_id) != 0) {
+            // if (this->is_master == false && mas_id.compare(this->master_id) != 0) {
 
-                cout << "Update master id " << this->master_id << " to " << mas_id <<endl;
-                string msg_to_log = this->time_util() + " At " + to_string(this->local_time) + "Update master id " + this->master_id + " to " + mas_id + "\n";
-                this->node_logger->log_message(msg_to_log);
-                this->master_id = mas_id;
+            //     cout << "Update master id " << this->master_id << " to " << mas_id <<endl;
+            //     string msg_to_log = this->time_util() + " At " + to_string(this->local_time) + "Update master id " + this->master_id + " to " + mas_id + "\n";
+            //     this->node_logger->log_message(msg_to_log);
+            //     this->master_id = mas_id;
 
-            }
+            // }
             continue;
         } 
         map<string, tuple<int, int, int>>::iterator it;

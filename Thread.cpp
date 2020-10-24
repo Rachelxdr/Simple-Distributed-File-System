@@ -96,7 +96,7 @@ void receive_msg(void* node){
         
         struct sockaddr_in* src_addr_info = (struct sockaddr_in*)&src_addr;
 
-        printf("message received: %s from %s\n", buf, inet_ntoa(src_addr_info->sin_addr));
+        printf("message received from: %s\n", inet_ntoa(src_addr_info->sin_addr));
         string msg_to_log = my_node->time_util() + " Received " + to_string(num_bytes) + " bytes " + "from " + inet_ntoa(src_addr_info->sin_addr) + " : " + PORT "\n";
         my_node->node_logger->log_message(msg_to_log);
 
