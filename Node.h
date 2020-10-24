@@ -78,6 +78,7 @@ class Node {
         int get_time();
         void update_time();
         void show_members();
+        void receive_msg();
 
         Node();
         
