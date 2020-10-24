@@ -20,7 +20,7 @@ string Node::pack_membership_list(){
     for (auto& element: this->mem_list) {
         string key = element.first;
         tuple <int, int, int> value = element.second;
-        mem_info += key+ "::" + to_string(get<0>(value)) + "," + to_string(get<1>(value)) + "," + to_string(get<2>(value)) + ";";
+        mem_info += key+ "||" + to_string(get<0>(value)) + "," + to_string(get<1>(value)) + "," + to_string(get<2>(value)) + ";";
     }
     return mem_info;
 }
@@ -221,14 +221,14 @@ void Node::process_hb(string message) {
         if (mem.size() == 0) {
             continue;
         }
-        vector<string> elem_entry = splitString(mem, "::");
+        vector<string> elem_entry = splitString(mem, "||");
         string id = elem_entry[0];
         vector<string> elem_list = splitString(mem, ",");
         int hb = stoi(elem_list[1]);
         int time = stoi(elem_list[2]);
         int flag = stoi(elem_list[3]);
         // string mas_id = elem_list[4];
-
+        cout <<"finished splitting" <<endl;
         // information of myself
         if (id.compare(this->self_member_id) == 0) {
             // kill myself if detected as failed by others
@@ -305,6 +305,7 @@ void Node::read_message(string msg){
     string message = splited_msg[1]; // id, hb, time, flag, masterid; id, hb, time, flag, masterid...
     // cout <<"type: "<<type<<endl;
     // if receives "JOIN" message, current node is master
+    cout<<"finished parsing"<<endl;
     if (type == "JOIN") {
         vector<string> other_info = splitString(message, ",");
         string other_id = other_info[0];
