@@ -49,17 +49,17 @@ vector<string> Node::get_gossip_targets(){
         }
 
     }
-
-    if (all_members.size() <= MAX_NUM_TARGET) {
-        return all_members;
-    }
-    vector<string> chosen_members;
-    for (int i = 0; i <= MAX_NUM_TARGET; i++) {
-        int random_num = rand() % all_members.size();
-        chosen_members.push_back(all_members[random_num]);
-        all_members.erase(all_members.begin() + random_num);
-    }
-    return chosen_members;
+    return all_members;
+    // if (all_members.size() <= MAX_NUM_TARGET) {
+    //     return all_members;
+    // }
+    // vector<string> chosen_members;
+    // for (int i = 0; i <= MAX_NUM_TARGET; i++) {
+    //     int random_num = rand() % all_members.size();
+    //     chosen_members.push_back(all_members[random_num]);
+    //     all_members.erase(all_members.begin() + random_num);
+    // }
+    // return chosen_members;
     
 
 }
